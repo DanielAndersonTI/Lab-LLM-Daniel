@@ -1,0 +1,32 @@
+## Roteiro
+1. Carregar e limpar um livro do Gutenberg ok
+2. Segmentar em sentenças e tokenizar ok
+3. Separar treino / validação / teste e tratar palavras fora do vocabulário ok (`<UNK>`)
+4. Implementar a classe `NGramLM` (contagens + MLE + suavização add-k)
+5. Calcular a perplexidade de unigrama, bigrama e trigrama
+6. Ajustar `k` na validação e implementar interpolação linear
+7. Gerar texto no estilo Shannon
+8. Responder às questões de análise
+
+Etapa 0 — Imports e configuração: concluída
+
+Bibliotecas importadas.
+SEED = 42 configurada.
+Comentários didáticos adicionados.
+Ainda não foi registrada como executada dentro do notebook porque o kernel do VS Code não iniciou corretamente.
+Etapa 1 — Carregar e limpar o livro do Gutenberg: concluída e validada
+
+Dom Casmurro baixado.
+Arquivo livro.txt salvo em Downloads.
+Cabeçalho e rodapé removidos.
+Resultado: 410.037 caracteres brutos e 390.076 após a limpeza.
+Verificações passaram com OK.
+Etapa 2 — Segmentar e tokenizar: concluída e validada
+
+Texto dividido em sentenças.
+Palavras convertidas para minúsculas.
+Acentos preservados.
+Palavras com hífen mantidas como um token.
+Resultado: 4.564 sentenças, 65.775 tokens e 9.414 tipos.
+Verificações passaram com OK.
+O código do gráfico de Zipf foi incluído, mas ainda não foi executado porque o ambiente Python do terminal não possui matplotlib.
