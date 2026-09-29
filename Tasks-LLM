@@ -2,24 +2,24 @@
 1. Carregar e limpar um livro do Gutenberg ok
 2. Segmentar em sentenças e tokenizar ok
 3. Separar treino / validação / teste e tratar palavras fora do vocabulário ok (`<UNK>`)
-4. Implementar a classe `NGramLM` (contagens + MLE + suavização add-k)
-5. Calcular a perplexidade de unigrama, bigrama e trigrama
-6. Ajustar `k` na validação e implementar interpolação linear
-7. Gerar texto no estilo Shannon
-8. Responder às questões de análise
+4. Implementar a classe `NGramLM` (contagens + MLE + suavização add-k) ok
+5. Calcular a perplexidade de unigrama, bigrama e trigrama ok
+6. Ajustar `k` na validação e implementar interpolação linear ok
+7. Gerar texto no estilo Shannon ok
+8. Responder às questões de análise ok
 
 Etapa 0 — Imports e configuração: concluída
 
 Bibliotecas importadas.
 SEED = 42 configurada.
 Comentários didáticos adicionados.
-Ainda não foi registrada como executada dentro do notebook porque o kernel do VS Code não iniciou corretamente.
+Executada no notebook via execução headless (nbclient + jupyter_client, kernel python3) em 28/09/2026, sem erros.
 Etapa 1 — Carregar e limpar o livro do Gutenberg: concluída e validada
 
 Dom Casmurro baixado.
 Arquivo livro.txt salvo em Downloads.
 Cabeçalho e rodapé removidos.
-Resultado: 410.037 caracteres brutos e 390.076 após a limpeza.
+Resultado: 400.944 caracteres brutos e 381.375 após a limpeza.
 Verificações passaram com OK.
 Etapa 2 — Segmentar e tokenizar: concluída e validada
 
@@ -29,4 +29,58 @@ Acentos preservados.
 Palavras com hífen mantidas como um token.
 Resultado: 4.564 sentenças, 65.775 tokens e 9.414 tipos.
 Verificações passaram com OK.
-O código do gráfico de Zipf foi incluído, mas ainda não foi executado porque o ambiente Python do terminal não possui matplotlib.
+Gráfico de Zipf executado com matplotlib 3.10.9 (backend inline) e imagem 695x475 gravada na célula.
+
+Etapa 3 — Treino / validação / teste + <UNK>: concluída e validada
+
+Divisão aleatória com SEED=42: 3.651 treino / 456 validação / 457 teste sentenças.
+Vocabulário apenas do treino (MIN_FREQ=2): 3.500 palavras + <UNK> + </s>.
+Taxa de <UNK> no teste: 14,35%.
+Verificações passaram com OK.
+
+Etapa 4 — Classe NGramLM: concluída e validada
+
+Padding <s>/</s>, contagens C(ctx, w) e C(ctx), MLE com k=0 e suavização add-k.
+Log-probabilidade por sentença (inclui </s>) e perplexidade exp(-média dos log P).
+Mini-corpus do slide (I am Sam): 7 asserções de probabilidade + soma 1 para k = 0, 1 e 0,1 -> OK.
+
+Etapa 2.1 — Lei de Zipf: gráfico gerado e resposta escrita na célula da pergunta (b = -1,000; 5.296 hapax; cauda acima e cabeça abaixo da reta).
+
+Etapa 5 — Perplexidade de unigrama, bigrama e trigrama: concluída e validada
+
+PP MLE (k = 0), treino / teste: 1-grama 348.84 / 252.34; 2-grama 32.20 / inf; 3-grama 4.54 / inf.
+PP Laplace (k = 1), treino / teste: 350.87 / 256.67 (1-grama), 610.97 / 643.21 (2-grama), 1,281.37 / 1,981.14 (3-grama).
+Melhor k na validação: 0.001 (1-grama), 0.01 (2-grama) e 0.005 (3-grama) -> PP no teste 252.34, 241.66 e 886.84.
+O MLE zera n-gramas nunca vistos, por isso a PP de bigrama e trigrama vai para infinito no teste.
+
+Etapa 6 — Interpolação linear: concluída e validada
+
+Busca em grade na validação com passo 0.1 e lambda1 > 0: melhor combinação lambda = (0.5, 0.4, 0.1).
+PP(validação) = 141.99 e PP(teste) = 138.95, o melhor resultado entre todos os modelos.
+
+Etapa 6.1 — Tabela e gráfico de barras da perplexidade no teste: concluído
+
+Tabela com MLE, Laplace, add-k e interpolação; gráfico (1094x604) salvo na célula, com nota
+para os dois modelos de PP infinita (MLE de 2 e de 3-gramas), que não entram nas barras.
+
+Etapa 7 — Geração no estilo Shannon: concluída
+
+Três frases por modelo com SEED=42. O 1-grama gera palavras soltas, o 2-grama frases curtas e o
+3-grama trechos mais coerentes; a geração para quando o contexto não aparece no treino.
+
+Status em 28/09/2026
+
+Seções 0 a 7 executadas dentro do notebook: 16 células de código (17 com a do bônus), execution_count de 1 a 17 e 0 erros.
+Concluído: 2.1 Lei de Zipf, questões 1 a 8 (com o bônus da Iracema) e declaração de uso de IA
+estão nas células de markdown do notebook, com as evidências numéricas.
+Execução headless equivalente ao Run All (usar quando não houver TODOs pendentes):
+python -m nbconvert --to notebook --execute --inplace atividade_ngramas.ipynb
+
+Etapa 8 — Questões de análise (2.1 e itens 1 a 7): respondidas nas células de markdown.
+Item 8 (bônus, Iracema de José de Alencar, id 67740): concluído em célula de código.
+• Taxa de <UNK> na Iracema: 33,15% (contra 14,35% no teste de Dom Casmurro).
+• Com o mesmo tratamento de <UNK> a PP cai (1-grama 113,96; interpolação 93,72) — artefato do <UNK>.
+• Só palavras conhecidas: interpolação 203,76 (Dom Casmurro) -> 236,56 (Iracema), +16%.
+Etapa 9 — Declaração de uso de IA: rascunho pronto na seção 9 (revisar as palavras finais).
+
+Estado final: notebook com 35 células, 17 de código executadas (execution_count 1 a 17), 0 erros e 2 gráficos.
